@@ -260,6 +260,14 @@
             color: rgba(255, 255, 255, 0.5);
             font-size: 3rem;
             transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .portfolio-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .portfolio-item:hover .portfolio-image {
@@ -429,6 +437,101 @@
             outline-offset: 5px;
         }
 
+        /* Password Modal */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .password-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-content h3 {
+            margin-bottom: 1rem;
+            color: #00d4ff;
+            font-size: 1.5rem;
+        }
+
+        .password-content p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .password-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .password-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .password-btn.confirm {
+            background: linear-gradient(45deg, #00d4ff, #7b68ee);
+            color: white;
+        }
+
+        .password-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff4757;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -476,9 +579,23 @@
     </style>
 </head>
 <body>
+    <!-- Password Modal -->
+    <div class="password-modal hidden" id="passwordModal">
+        <div class="password-content">
+            <h3>🔒 Área Restrita</h3>
+            <p>Digite a senha para acessar o modo de edição:</p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Digite a senha...">
+            <div class="error-message hidden" id="errorMessage">Senha incorreta! Tente novamente.</div>
+            <div class="password-buttons">
+                <button class="password-btn confirm" onclick="checkPassword()">Confirmar</button>
+                <button class="password-btn cancel" onclick="closePasswordModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Mode Button -->
     <div class="edit-mode">
-        <button class="edit-btn" onclick="toggleEditMode()">✏️ Edit</button>
+        <button class="edit-btn" onclick="requestEditMode()">✏️ Edit</button>
     </div>
 
     <!-- Header -->
@@ -525,8 +642,8 @@
                         and contribute to projects that have a positive impact.
                     </p>
                 </div>
-                <div class="about-image">
-                    📸
+                <div class="portfolio-image">
+                        <img src="drak.png" alt="Parkour Unleashed New Era">
                 </div>
             </div>
         </div>
@@ -539,43 +656,28 @@
             <div class="portfolio-grid">
                 <div class="portfolio-item" onclick="openProject(1)">
                     <div class="portfolio-image">
-                      <img src="ascent-noir.png" alt="Ascent Noir">
-                            <style>
-                            .portfolio-image {
-                                width: 100%;
-                                height: 200px;
-                                overflow: hidden;
-                                border-radius: 10px;
-                            }
-
-                            .portfolio-image img {
-                                width: 100%;
-                                height: 100%;
-                                object-fit: cover;
-                                display: block;
-                            }
-                            </style>
+                        <img src="ascent-noir.png" alt="Ascent Noir" onerror="this.style.display='none'; this.parentElement.innerHTML='🎮';">
                     </div>
                     <h3 class="editable" contenteditable="false">Ascent Noir</h3>
                     <p class="editable" contenteditable="false">Its a Parkour Game Inspired By Parkour Reborn</p>
                 </div>
                 <div class="portfolio-item" onclick="openProject(2)">
                     <div class="portfolio-image">
-                        <img src="parkour-unleashed.png" alt="Parkour Unleashed New Era">
+                        <img src="parkour-unleashed.png" alt="Parkour Unleashed New Era" onerror="this.style.display='none'; this.parentElement.innerHTML='🏃';">
                     </div>
                     <h3 class="editable" contenteditable="false">Parkour Unleashed New Era</h3>
                     <p class="editable" contenteditable="false">Its a Parkour Game Inspired By Reborn Too</p>
                 </div>
                 <div class="portfolio-item" onclick="openProject(3)">
                     <div class="portfolio-image">
-                        <img src="surface-park.png" alt="Surface Park Reborn">
+                        <img src="surface-park.png" alt="Surface Park Reborn" onerror="this.style.display='none'; this.parentElement.innerHTML='👻';">
                     </div>
                     <h3 class="editable" contenteditable="false">Surface Park Reborn</h3>
                     <p class="editable" contenteditable="false">Its a Horror Game</p>
                 </div>
                 <div class="portfolio-item" onclick="openProject(4)">
                     <div class="portfolio-image">
-                        <img src="placeholder.png" alt="Placeholder">
+                        <img src="placeholder.png" alt="Placeholder" onerror="this.style.display='none'; this.parentElement.innerHTML='📦';">
                     </div>
                     <h3 class="editable" contenteditable="false">Placeholder</h3>
                     <p class="editable" contenteditable="false">Placeholder</p>
@@ -583,7 +685,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- Skills Section -->
     <section id="skills" class="loading">
@@ -647,7 +748,7 @@
                 <a href="#" class="editable" contenteditable="false">📱</a>
                 <a href="#" class="editable" contenteditable="false">🐦</a>
             </div>
-            <p class="editable" contenteditable="false">&copy; 2024 My Portfolio. All rights reserved.</p>
+            <p class="editable" contenteditable="false">&copy; 2025 My Portfolio. All rights reserved.</p>
         </div>
     </footer>
 
@@ -656,38 +757,129 @@
         emailjs.init("Qn9lNcIu5D9BnpyEX"); // Seu Public Key
     </script>
 
-
     <script>
         let editMode = false;
+        const correctPassword = "@#!Drak!#@";
 
-        // Toggle Edit Mode
-        function toggleEditMode() {
-            editMode = !editMode;
+        // Request Edit Mode (shows password modal)
+        function requestEditMode() {
+            if (editMode) {
+                // If already in edit mode, just save and exit
+                toggleEditMode();
+            } else {
+                // Show password modal
+                document.getElementById('passwordModal').classList.remove('hidden');
+                document.getElementById('passwordInput').focus();
+                
+                // Clear previous error
+                document.getElementById('errorMessage').classList.add('hidden');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Check password
+        function checkPassword() {
+            const inputPassword = document.getElementById('passwordInput').value;
+            const errorElement = document.getElementById('errorMessage');
+            
+            if (inputPassword === correctPassword) {
+                // Correct password - enable edit mode
+                closePasswordModal();
+                enableEditMode();
+            } else {
+                // Wrong password - show error
+                errorElement.classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                
+                // Add shake animation to modal
+                const modal = document.querySelector('.password-content');
+                modal.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    modal.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Close password modal
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        // Enable Edit Mode
+        function enableEditMode() {
+            editMode = true;
             const editables = document.querySelectorAll('.editable');
             const btn = document.querySelector('.edit-btn');
             
             editables.forEach(element => {
-                element.contentEditable = editMode;
-                if (editMode) {
-                    element.style.cursor = 'text';
-                    element.addEventListener('input', saveContent);
-                } else {
-                    element.style.cursor = 'default';
-                    element.removeEventListener('input', saveContent);
-                }
+                element.contentEditable = true;
+                element.style.cursor = 'text';
+                element.addEventListener('input', saveContent);
             });
             
-            btn.textContent = editMode ? '💾 Save' : '✏️ Edit';
-            btn.style.background = editMode ? '#28a745' : '#00d4ff';
+            btn.textContent = '💾 Save';
+            btn.style.background = '#28a745';
             
-            if (!editMode) {
-                alert('Content saved! (In a real website, this would save to the server)');
-            }
+            // Show success message
+            showNotification('🔓 Modo de edição ativado!', 'success');
+        }
+
+        // Toggle Edit Mode (only for saving/exiting)
+        function toggleEditMode() {
+            editMode = false;
+            const editables = document.querySelectorAll('.editable');
+            const btn = document.querySelector('.edit-btn');
+            
+            editables.forEach(element => {
+                element.contentEditable = false;
+                element.style.cursor = 'default';
+                element.removeEventListener('input', saveContent);
+            });
+            
+            btn.textContent = '✏️ Edit';
+            btn.style.background = '#00d4ff';
+            
+            showNotification('💾 Conteúdo salvo com sucesso!', 'success');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'linear-gradient(45deg, #28a745, #20c997)' : 'linear-gradient(45deg, #00d4ff, #7b68ee)'};
+                color: white;
+                border-radius: 10px;
+                z-index: 10001;
+                font-weight: 600;
+                box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
 
         // Save content (simulated)
         function saveContent() {
-            // In a real website, you would save to localStorage or send to a server
             console.log('Content being saved...');
         }
 
@@ -696,19 +888,45 @@
             event.preventDefault();
             emailjs.sendForm('service_nx9ea0q', 'template_2yj12v8', event.target)
                 .then(() => {
-                    alert('✅ Mensagem enviada com sucesso!');
+                    showNotification('✅ Mensagem enviada com sucesso!', 'success');
                     event.target.reset();
                 }, (error) => {
                     console.error('Erro ao enviar:', error);
-                    alert('❌ Erro ao enviar a mensagem. Tente novamente.');
+                    showNotification('❌ Erro ao enviar a mensagem. Tente novamente.', 'error');
                 });
         }
 
-
         // Open project (simulate modal or navigation)
         function openProject(projectId) {
-            alert(`Opening project ${projectId}! (You can implement a modal or navigation here)`);
+            showNotification(`Abrindo projeto ${projectId}! 🚀`, 'info');
         }
+
+        // Handle Enter key in password input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('passwordModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePasswordModal();
+                }
+            });
+        });
+
+        // Add shake animation to CSS
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(shakeStyle);
 
         // Smooth scroll for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -760,6 +978,24 @@
                 img.addEventListener('click', function() {
                     if (editMode) {
                         const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = function(e) {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    const imgElement = img.querySelector('img');
+                                    if (imgElement) {
+                                        imgElement.src = e.target.result;
+                                        imgElement.style.display = 'block';
+                                    } else {
+                                        img.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" style="width: 100%; height: 100%; object-fit: cover; display: block;">`;
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        };
                         input.click();
                     }
                 });
@@ -814,5 +1050,20 @@
             const originalText = heroTitle.textContent;
             typeWriter(heroTitle, originalText, 50);
         });
+
+        // Security: Disable right-click and some keyboard shortcuts
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
+</html>
